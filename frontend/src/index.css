@@ -158,7 +158,7 @@ input[type="time"],
 input[type="file"],
 select,
 textarea {
-    @apply w-full p-3 rounded-md border border-border-color bg-bg-secondary text-text-color text-base transition-all duration-300 ease-in-out;
+    @apply w-full p-3 rounded-md border border-border-color bg-secondary text-text-color text-base transition-all duration-300 ease-in-out;
 }
 
 input[type="text"]:focus,
