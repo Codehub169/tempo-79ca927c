@@ -32,27 +32,29 @@ function prepareRequest(endpoint, params) {
             url = url.replace(`{${pathParamName}}`, params[pathParamName]);
         } else {
             console.warn(`Missing path parameter '${pathParamName}' for endpoint '${endpoint}'`);
-            // Fallback for missing path param, might result in a 404
-            url = url.replace(`{${pathParamName}}`, 'default');
+            url = url.replace(`{${pathParamName}}`, 'default'); // Fallback
         }
     }
 
     // For POST requests, parameters go in the body
     const method = getHttpMethod(endpoint);
     if (method === 'post') {
-        // Special handling for /upload_image as it expects multipart/form-data
+        // Special handling for /upload_image
         if (endpoint === '/upload_image') {
-            // This is a simulated approach for scheduled file uploads.
-            // In a real scenario, 'params.file' would be a path to a file on the scheduler server's
-            // filesystem, which would then be read and appended as a Buffer to FormData.
-            // Here, we create a Blob from the filename string itself to simulate a file upload.
-            const formData = new FormData();
-            if (params && params.file) {
-                // Create a Blob from the string value of params.file, naming it params.file
-                formData.append('file', new Blob([params.file], { type: 'application/octet-stream' }), params.file);
-            }
-            data = formData;
-            headers['Content-Type'] = 'multipart/form-data'; // Axios sets boundary automatically
+            // The Codehub API's uploadImage expects a 'file' object with 'name', 'size', 'type'.
+            // Since we're in Node.js and not dealing with actual files from a browser input,
+            // we'll simulate this object.
+            const fileName = params && params.file ? params.file : 'simulated_upload.txt';
+            const fileSize = 1024 * 1024; // 1 MB simulated size
+            const fileType = 'text/plain';
+
+            data = {
+                name: fileName,
+                size: fileSize,
+                type: fileType,
+                // Add any other relevant properties that the simulated Codehub API might check
+            };
+            headers['Content-Type'] = 'application/json'; // Send as JSON for the simulated API to parse
         } else {
             // For x-www-form-urlencoded, Axios can take a plain object
             // or URLSearchParams. Let's use URLSearchParams for explicit control.
@@ -96,7 +98,9 @@ function formatCronExpression(schedule) {
     switch (schedule.type) {
         case 'once':
             // For 'once', schedule it at the exact datetime.
-            // Example: "2024-03-15T14:30" -> "30 14 15 03 *" (minute hour day month dayOfWeek)
+            // Example: "2024-03-15T14:30" -> "30 14 15 03 *", but we need to ensure it runs only once.
+            // node-cron handles this by stopping the job after the first run if configured.
+            // The cron expression itself will be for a specific time.
             const date = new Date(schedule.value);
             const minute = date.getMinutes();
             const hour = date.getHours();
@@ -279,10 +283,27 @@ export const initScheduledTasks = async () => {
         console.log(`Found ${activeTasks.length} active tasks to schedule on startup.`);
         activeTasks.forEach(task => {
             // Re-calculate nextRun on startup based on current time for display accuracy
-            if (task.schedule.type !== 'once' || new Date(task.schedule.value) > new Date()) {
-                 // Only schedule if it's a recurring task or a future one-time task
-                scheduleTask(task);
-            } else if (task.schedule.type === 'once' && new Date(task.schedule.value) <= new Date()) {
+            // For 'once' tasks, only schedule if it's in the future.
+            const taskSchedule = {
+                type: task.schedule_type,
+                value: task.schedule_value,
+                day: task.schedule_day,
+                time: task.schedule_time
+            };
+            const nextRunTime = calculateNextRunDisplayString(taskSchedule);
+
+            if (task.schedule.type !== 'once' || (task.schedule.type === 'once' && nextRunTime !== 'Completed')) {
+                scheduleTask({
+                    id: task.id,
+                    name: task.name,
+                    endpoint: task.endpoint,
+                    parameters: JSON.parse(task.parameters),
+                    schedule: taskSchedule,
+                    lastRun: task.lastRun,
+                    nextRun: task.nextRun,
+                    status: task.status
+                });
+            } else if (task.schedule.type === 'once' && nextRunTime === 'Completed') {
                 // For past one-time tasks, ensure their status is 'Completed' if not already
                 if (task.status !== 'Completed' && task.status !== 'Failed') {
                     Task.update(task.id, { status: 'Completed', nextRun: 'N/A' });
@@ -296,3 +317,6 @@ export const initScheduledTasks = async () => {
 
 // Export the scheduledJobs map for potential debugging or external access if needed
 export const getScheduledJobs = () => scheduledJobs;
+
+// Export calculateNextRunDisplayString for use in routes/tasks.js
+export { calculateNextRunDisplayString };
