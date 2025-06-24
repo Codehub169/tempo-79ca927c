@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Backend service for managing and executing scheduled tasks for the Codehub Execution Engine.",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
