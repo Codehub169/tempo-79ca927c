@@ -1,14 +1,14 @@
 import { Box, Flex, Text, Link as ChakraLink } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
-import { CodeIcon } from '@chakra-ui/icons'; // Using a common icon for now, will replace with custom SVG if needed
+import { FaCode } from 'react-icons/fa'; // Changed from CodeIcon
 
 function Header() {
   return (
     <Box as="header" bg="bg.secondary" p={{ base: 4, md: 8 }} borderBottom="1px" borderColor="border.color" boxShadow="dark" zIndex="1000">
       <Flex justify="space-between" align="center" maxW="7xl" mx="auto">
         <Flex align="center" className="logo">
-          {/* Using Chakra UI's CodeIcon, replace with actual SVG later if design requires */}
-          <CodeIcon w={8} h={8} mr={2} color="accent.blue" />
+          {/* Using FaCode from react-icons/fa */}
+          <Box as={FaCode} w={8} h={8} mr={2} color="accent.blue" />
           <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="bold" color="accent.blue">
             Codehub
           </Text>
