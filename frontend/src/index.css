@@ -124,7 +124,7 @@ pre, code, .font-mono {
 }
 
 .btn-secondary {
-    @apply bg-bg-secondary border border-accent-blue text-accent-blue;
+    @apply bg-secondary border border-accent-blue text-accent-blue;
 }
 .btn-secondary:hover {
     @apply bg-accent-blue text-white;
