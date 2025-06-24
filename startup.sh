@@ -10,11 +10,11 @@ echo "\n⚙️  Setting up frontend (React)...
 "
 cd frontend
 
-echo "Cleaning npm cache..."
-npm cache clean --force
+# Removed: echo "Cleaning npm cache..."
+# Removed: npm cache clean --force
 
 echo "Installing frontend dependencies..."
-npm ci
+npm install
 
 echo "Building frontend application..."
 npm run build
