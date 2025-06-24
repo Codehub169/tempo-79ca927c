@@ -4,7 +4,7 @@ input[type="time"],
 input[type="file"],
 select,
 textarea {
-    @apply w-full p-3 rounded-md border border-border bg-secondary text-text-color text-base transition-all duration-300 ease-in-out;
+    @apply w-full p-3 rounded-md border border-border bg-secondary text-text text-base transition-all duration-300 ease-in-out;
 }
 
 input[type="text"]:focus,
@@ -13,5 +13,5 @@ input[type="time"]:focus,
 input[type="file"]:focus,
 select:focus,
 textarea:focus {
-    @apply outline-none border-accent-blue shadow-outline-blue; /* Custom shadow for focus */
+    @apply outline-none border-accent-blue ring-2 ring-accent-blue; /* Custom focus ring for visual feedback */
 }
