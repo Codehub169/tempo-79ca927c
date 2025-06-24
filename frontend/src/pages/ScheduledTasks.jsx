@@ -348,8 +348,8 @@ const ScheduledTasks = () => {
                     <Td>{task.endpoint}</Td>
                     <Td fontSize="sm" fontFamily="IBM Plex Mono"><pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', maxHeight: '100px', overflowY: 'auto' }}>{JSON.stringify(task.parameters, null, 2)}</pre></Td>
                     <Td>{task.schedule.type === 'once' ? task.schedule.value : task.schedule.type === 'custom' ? task.schedule.value : `${task.schedule.type} at ${task.schedule.time || task.schedule.value}`}</Td>
-                    <Td>{task.lastRun}</Td>
-                    <Td>{task.nextRun}</Td>
+                    <Td>{task.lastRun === 'N/A' ? 'N/A' : new Date(task.lastRun).toLocaleString()}</Td>
+                    <Td>{task.nextRun === 'N/A' || task.nextRun === 'Completed' ? task.nextRun : new Date(task.nextRun).toLocaleString()}</Td>
                     <Td>
                       <Tag size="md" variant="subtle" colorScheme={getStatusColor(task.status)} borderRadius="full">
                         <Box as="span" className="dot" bg={`${getStatusColor(task.status)}.500`} borderRadius="full" w="2" h="2" mr="2"></Box>
@@ -414,7 +414,7 @@ const ScheduledTasks = () => {
                 executionHistory.map((historyItem, index) => (
                   <Tr key={index}>
                     <Td>{historyItem.taskName}</Td>
-                    <Td>{historyItem.executionTime}</Td>
+                    <Td>{new Date(historyItem.executionTime).toLocaleString()}</Td>
                     <Td>
                       <Tag size="md" variant="subtle" colorScheme={getStatusColor(historyItem.status)} borderRadius="full">
                         <Box as="span" className="dot" bg={`${getStatusColor(historyItem.status)}.500`} borderRadius="full" w="2" h="2" mr="2"></Box>

@@ -15,11 +15,10 @@ export default defineConfig({
         secure: false // Set to true for HTTPS targets
       },
       // Proxy requests for the local scheduler backend API
-      // This assumes the scheduler backend will run on an internal port (e.g., 3001) in development
-      // and then serve the frontend and its own API on 9000 in production.
-      // For local dev, Vite will serve frontend on 9000 and proxy API calls.
+      // The Node.js server (server.js) will be configured to serve the built React app
+      // and expose the scheduler API, all on port 9000. So, proxy to the same origin.
       '/api/scheduler': {
-        target: 'http://localhost:3001', // Placeholder for scheduler backend's internal dev port
+        target: 'http://localhost:9000', // Scheduler backend also serves on 9000
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/scheduler/, ''), // Remove /api/scheduler prefix
         secure: false

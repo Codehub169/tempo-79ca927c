@@ -16,27 +16,6 @@ const LogsViewer = () => {
 
   let tailingInterval = useRef(null);
 
-  // Helper to format log lines with simulated colors
-  const formatLogLine = (timestamp, level, message) => {
-    const levelClass = level.toLowerCase();
-    let color = 'white';
-    switch (levelClass) {
-      case 'info': color = 'blue.300'; break;
-      case 'warn': color = 'orange.300'; break;
-      case 'error': color = 'red.300'; break;
-      case 'success': color = 'green.300'; break;
-      case 'debug': color = 'gray.400'; break;
-      default: color = 'white';
-    }
-    return (`
-      <Text key={${Date.now()}-${Math.random()}} fontFamily="IBM Plex Mono" fontSize="sm" display="flex" alignItems="baseline">
-        <Text as="span" color="gray.500" mr="2">${timestamp}</Text>
-        <Text as="span" fontWeight="bold" textTransform="uppercase" mr="2" color={${JSON.stringify(color)}}>[${level.toUpperCase()}]</Text>
-        <Text as="span" flex="1">${message}</Text>
-      </Text>
-    `);
-  };
-
   // Simulate log generation
   const generateLog = (currentDirName) => {
     const now = new Date();
@@ -68,10 +47,14 @@ const LogsViewer = () => {
 
   const appendLog = (logEntry) => {
     setLogBuffer(prev => [...prev, logEntry]);
-    if (!isPaused && logViewerRef.current) {
-      logViewerRef.current.scrollTop = logViewerRef.current.scrollHeight; // Auto-scroll
-    }
   };
+
+  useEffect(() => {
+    // Auto-scroll when new logs are added, unless paused
+    if (!isPaused && logViewerRef.current) {
+      logViewerRef.current.scrollTop = logViewerRef.current.scrollHeight;
+    }
+  }, [logBuffer, isPaused]); // Depend on logBuffer and isPaused
 
   const startTailing = async () => {
     if (!dirName) {
@@ -88,6 +71,7 @@ const LogsViewer = () => {
     setIsLoading(true);
     setLogBuffer([]); // Clear previous logs
     setIsTailing(true);
+    setIsPaused(false); // Ensure not paused on start
     setSearchTerm(''); // Clear search on new tail
     dirNameInputRef.current.disabled = true; // Disable input while tailing
 
@@ -150,28 +134,12 @@ const LogsViewer = () => {
 
   const togglePauseResume = () => {
     setIsPaused(prev => !prev);
-    if (!isPaused && logViewerRef.current) {
-      logViewerRef.current.scrollTop = logViewerRef.current.scrollHeight; // Scroll to bottom on resume
-    }
-  };
-
-  const filterLogs = () => {
-    // Re-render logs based on search term
-    if (logViewerRef.current) {
-      const filteredHtml = logBuffer.filter(log =>
-        log.message.toLowerCase().includes(searchTerm.toLowerCase())
-      ).map(log => formatLogLine(log.timestamp, log.level, log.message)).join('');
-      logViewerRef.current.innerHTML = filteredHtml;
-    }
   };
 
   const clearLogs = () => {
     stopTailing(); // Stop tailing if active
     setLogBuffer([]);
     setSearchTerm('');
-    if (logViewerRef.current) {
-      logViewerRef.current.innerHTML = '<p style="color: var(--text-secondary);">Logs cleared. Waiting for new entries...</p>';
-    }
     toast({
       title: 'Logs Cleared',
       description: 'The log viewer has been cleared.',
@@ -199,10 +167,9 @@ const LogsViewer = () => {
     };
   }, []);
 
-  // Effect to re-filter logs when search term or log buffer changes
-  useEffect(() => {
-    filterLogs();
-  }, [searchTerm, logBuffer]);
+  const filteredLogs = logBuffer.filter(log =>
+    log.message.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Box p={8} maxWidth="1400px" mx="auto" width="100%">
@@ -298,12 +265,10 @@ const LogsViewer = () => {
             '::-webkit-scrollbar-thumb:hover': { background: 'accent.blue' },
           }}
         >
-          {logBuffer.length === 0 && !isLoading && (
+          {filteredLogs.length === 0 && !isLoading && (
             <Text color="text.secondary">Enter a directory name and click 'Start Tailing' to view logs.</Text>
           )}
-          {logBuffer.filter(log =>
-            log.message.toLowerCase().includes(searchTerm.toLowerCase())
-          ).map((log, index) => (
+          {filteredLogs.map((log, index) => (
             <Text key={index} fontFamily="IBM Plex Mono" fontSize="sm" display="flex" alignItems="baseline">
               <Text as="span" color="gray.500" mr="2">{log.timestamp}</Text>
               <Text as="span" fontWeight="bold" textTransform="uppercase" mr="2" color={log.level === 'INFO' ? 'blue.300' : log.level === 'WARN' ? 'orange.300' : log.level === 'ERROR' ? 'red.300' : log.level === 'SUCCESS' ? 'green.300' : 'gray.400'}>[{log.level.toUpperCase()}]</Text>

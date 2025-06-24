@@ -42,17 +42,13 @@ function prepareRequest(endpoint, params) {
     if (method === 'post') {
         // Special handling for /upload_image as it expects multipart/form-data
         if (endpoint === '/upload_image') {
-            // In a real scenario, 'file' would be a path to a file on the scheduler server,
-            // which would then be read and appended to FormData.
-            // For this simulation, we'll just send a placeholder string if 'file' exists in params.
+            // This is a simulated approach for scheduled file uploads.
+            // In a real scenario, 'params.file' would be a path to a file on the scheduler server's
+            // filesystem, which would then be read and appended as a Buffer to FormData.
+            // Here, we create a Blob from the filename string itself to simulate a file upload.
             const formData = new FormData();
             if (params && params.file) {
-                // This is a simplified simulation. In a real scenario, you'd read the file
-                // from the scheduler-backend's filesystem and append its buffer.
-                // For now, we'll just send the filename as a Blob or similar, which
-                // the Codehub API might handle as a placeholder.
-                // A more robust solution would involve streaming or base64 encoding if the file
-                // content itself needs to be sent via the scheduler.
+                // Create a Blob from the string value of params.file, naming it params.file
                 formData.append('file', new Blob([params.file], { type: 'application/octet-stream' }), params.file);
             }
             data = formData;
@@ -126,6 +122,51 @@ function formatCronExpression(schedule) {
 }
 
 /**
+ * Calculates the next run time for a scheduled task based on its schedule type for display.
+ * This is a simplified calculation and might not perfectly match complex cron behaviors
+ * but provides a reasonable estimate for UI display.
+ * @param {object} schedule - The schedule object (type, value, day, time).
+ * @returns {string} - Formatted string of the next run time, or 'N/A' if not applicable.
+ */
+const calculateNextRunDisplayString = (schedule) => {
+    const now = new Date();
+    let nextRunDate = new Date();
+
+    if (schedule.type === 'once') {
+        nextRunDate = new Date(schedule.value);
+        if (nextRunDate <= now) {
+            return 'Completed'; // If a one-time task is in the past, consider it completed for display
+        }
+    } else if (schedule.type === 'daily') {
+        const [hours, minutes] = schedule.value.split(':').map(Number);
+        nextRunDate.setHours(hours, minutes, 0, 0);
+        if (nextRunDate <= now) {
+            nextRunDate.setDate(nextRunDate.getDate() + 1);
+        }
+    } else if (schedule.type === 'weekly') {
+        const [hours, minutes] = schedule.time.split(':').map(Number);
+        const targetDay = parseInt(schedule.day); // 0 for Sunday, 1 for Monday...
+        nextRunDate.setHours(hours, minutes, 0, 0);
+        let daysToAdd = (targetDay - nextRunDate.getDay() + 7) % 7;
+        if (daysToAdd === 0 && nextRunDate <= now) {
+            daysToAdd = 7; // If today is the day and time has passed, schedule for next week
+        } else if (daysToAdd === 0) {
+            // If today is the day and time is in future, it's today
+        }
+        nextRunDate.setDate(nextRunDate.getDate() + daysToAdd);
+    } else if (schedule.type === 'custom') {
+        // For cron, calculating the *exact* next run without a full cron library is complex.
+        // node-cron handles the actual scheduling. For display, we can provide a generic message.
+        // If a more precise display is needed, a library like 'cronstrue' or 'cron-parser' would be used here.
+        return 'Cron-based (dynamic)';
+    } else {
+        return 'N/A';
+    }
+
+    return nextRunDate.toISOString(); // Return ISO string for consistency with lastRun
+};
+
+/**
  * Schedules a single task using node-cron.
  * @param {object} task The task object to schedule.
  */
@@ -148,7 +189,7 @@ export const scheduleTask = (task) => {
 
         let executionStatus = 'Completed';
         let executionOutput = '';
-        let nextRun = null;
+        let nextRunForDb = null;
 
         try {
             const { url, data, headers } = prepareRequest(task.endpoint, task.parameters);
@@ -172,10 +213,32 @@ export const scheduleTask = (task) => {
             console.error(executionOutput);
         } finally {
             const now = new Date();
-            // Update task's lastRun and potentially nextRun
+            let updatedStatus = task.status; // Default to current status
+
+            if (task.schedule.type === 'once') {
+                // For 'once' tasks, if completed, mark as 'Completed' and stop job
+                if (executionStatus === 'Completed') {
+                    updatedStatus = 'Completed';
+                    job.stop();
+                    console.log(`One-time task '${task.name}' (${task.id}) completed and stopped.`);
+                    delete scheduledJobs[task.id];
+                } else {
+                    // If it failed, it might still be active but will not run again if it's 'once'
+                    // For simplicity, we keep it as 'Active' unless explicitly 'Completed'
+                }
+                nextRunForDb = 'N/A'; // No next run for one-time tasks after execution
+            } else {
+                // For recurring tasks, calculate the next run time after execution
+                // and keep status as 'Active' unless it failed critically.
+                nextRunForDb = calculateNextRunDisplayString(task.schedule);
+                updatedStatus = 'Active'; // Keep active for recurring tasks
+            }
+
+            // Update task's lastRun and nextRun in the database
             await Task.update(task.id, {
                 lastRun: now.toISOString(), // Store as ISO string for consistency
-                status: task.schedule.type === 'once' && executionStatus === 'Completed' ? 'Completed' : 'Active', // Mark 'once' tasks as completed
+                nextRun: nextRunForDb, // Update nextRun in DB
+                status: updatedStatus,
             });
 
             // Add to execution history
@@ -186,20 +249,6 @@ export const scheduleTask = (task) => {
                 status: executionStatus,
                 output: executionOutput,
             });
-
-            // If it's a 'once' task, stop the cron job after execution
-            if (task.schedule.type === 'once') {
-                job.stop();
-                console.log(`One-time task '${task.name}' (${task.id}) completed and stopped.`);
-                // Remove from scheduledJobs map
-                delete scheduledJobs[task.id];
-            } else {
-                // For recurring tasks, recalculate next run for display purposes (though cron handles it)
-                // This is more for UI consistency if needed, actual cron is self-managing
-                // The `calculateNextRun` function from frontend `schedulerApi.js` would be needed here
-                // to update `nextRun` in the database, but cron itself doesn't need it.
-                // For simplicity in this backend, we'll just rely on cron's internal next run logic.
-            }
         }
     }, {
         scheduled: true, // Start immediately
@@ -229,7 +278,16 @@ export const initScheduledTasks = async () => {
         const activeTasks = await Task.getAllActive(); // Assuming a method to get active tasks
         console.log(`Found ${activeTasks.length} active tasks to schedule on startup.`);
         activeTasks.forEach(task => {
-            scheduleTask(task);
+            // Re-calculate nextRun on startup based on current time for display accuracy
+            if (task.schedule.type !== 'once' || new Date(task.schedule.value) > new Date()) {
+                 // Only schedule if it's a recurring task or a future one-time task
+                scheduleTask(task);
+            } else if (task.schedule.type === 'once' && new Date(task.schedule.value) <= new Date()) {
+                // For past one-time tasks, ensure their status is 'Completed' if not already
+                if (task.status !== 'Completed' && task.status !== 'Failed') {
+                    Task.update(task.id, { status: 'Completed', nextRun: 'N/A' });
+                }
+            }
         });
     } catch (error) {
         console.error('Error initializing scheduled tasks:', error);

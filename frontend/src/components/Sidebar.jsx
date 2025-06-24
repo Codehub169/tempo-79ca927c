@@ -9,8 +9,8 @@ const Sidebar = ({ endpoints, onSelectEndpoint, activePath, activeMethod }) => {
       as="aside"
       flexShrink={0}
       width={{ base: '100%', lg: '280px' }}
-      bg={theme.colors.bgSecondary}
-      borderRadius={theme.radii.borderRadius}
+      bg={theme.colors.bg.secondary}
+      borderRadius={theme.radii.md}
       p={{ base: '1rem', md: '1.5rem' }}
       boxShadow={theme.shadows.dark}
       overflowY="auto"
@@ -19,11 +19,11 @@ const Sidebar = ({ endpoints, onSelectEndpoint, activePath, activeMethod }) => {
       <Text
         as="h2"
         fontSize={{ base: '1.2rem', md: '1.5rem' }}
-        color={theme.colors.textColor}
+        color={theme.colors.text.primary}
         mb="1.5rem"
         pb="0.8rem"
         borderBottom="1px solid"
-        borderColor={theme.colors.borderColor}
+        borderColor={theme.colors.border.color}
       >
         API Endpoints
       </Text>
@@ -39,7 +39,7 @@ const Sidebar = ({ endpoints, onSelectEndpoint, activePath, activeMethod }) => {
               textAlign="left"
               background="none"
               border="none"
-              color={theme.colors.textSecondary}
+              color={theme.colors.text.secondary}
               fontSize="1rem"
               py="0.8rem"
               px="1rem"
@@ -47,17 +47,17 @@ const Sidebar = ({ endpoints, onSelectEndpoint, activePath, activeMethod }) => {
               cursor="pointer"
               transition="all 0.3s ease"
               _hover={{
-                bg: theme.colors.bgCard,
-                color: theme.colors.textColor,
+                bg: theme.colors.bg.card,
+                color: theme.colors.text.primary,
               }}
               _active={{
-                bg: theme.colors.accentBlue,
+                bg: theme.colors.accent.blue,
                 color: 'white',
                 fontWeight: '500',
               }}
               sx={{
                 '&.active': {
-                  bg: theme.colors.accentBlue,
+                  bg: theme.colors.accent.blue,
                   color: 'white',
                   fontWeight: '500',
                 },
@@ -76,8 +76,9 @@ const Sidebar = ({ endpoints, onSelectEndpoint, activePath, activeMethod }) => {
                 fontSize="0.75rem"
                 minW="55px"
                 textAlign="center"
-                bg={endpoint.method.toLowerCase() === 'post' ? '#e5c07b' : '#98c379'}
-                color="#333"
+                // Use Chakra UI theme colors which are mapped from CSS variables
+                bg={endpoint.method.toLowerCase() === 'post' ? 'accent.orange' : 'accent.green'}
+                color="gray.900" // Ensure text is visible on accent colors
               >
                 {endpoint.method.toUpperCase()}
               </Text>
