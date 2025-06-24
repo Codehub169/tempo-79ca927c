@@ -206,7 +206,7 @@ const ScheduledTasks = () => {
     switch (scheduleType) {
       case 'once':
         return (
-          <Box border="1px dashed" borderColor="border.primary" p={4} borderRadius="md" bg="bg.secondary">
+          <Box border="1px dashed" borderColor="border.color" p={4} borderRadius="md" bg="bg.secondary">
             <FormControl id="run-at-datetime" isRequired>
               <FormLabel>Run At (Date & Time)</FormLabel>
               <Input
@@ -214,7 +214,7 @@ const ScheduledTasks = () => {
                 value={runAtDatetime}
                 onChange={(e) => setRunAtDatetime(e.target.value)}
                 bg="bg.secondary"
-                borderColor="border.primary"
+                borderColor="border.color"
                 color="text.primary"
                 _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
               />
@@ -223,7 +223,7 @@ const ScheduledTasks = () => {
         );
       case 'daily':
         return (
-          <Box border="1px dashed" borderColor="border.primary" p={4} borderRadius="md" bg="bg.secondary">
+          <Box border="1px dashed" borderColor="border.color" p={4} borderRadius="md" bg="bg.secondary">
             <FormControl id="daily-time" isRequired>
               <FormLabel>Run Every Day At (Time)</FormLabel>
               <Input
@@ -231,7 +231,7 @@ const ScheduledTasks = () => {
                 value={dailyTime}
                 onChange={(e) => setDailyTime(e.target.value)}
                 bg="bg.secondary"
-                borderColor="border.primary"
+                borderColor="border.color"
                 color="text.primary"
                 _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
               />
@@ -240,14 +240,14 @@ const ScheduledTasks = () => {
         );
       case 'weekly':
         return (
-          <Box border="1px dashed" borderColor="border.primary" p={4} borderRadius="md" bg="bg.secondary">
+          <Box border="1px dashed" borderColor="border.color" p={4} borderRadius="md" bg="bg.secondary">
             <FormControl id="weekly-day" isRequired mb={4}>
               <FormLabel>Run Every Week On</FormLabel>
               <Select
                 value={weeklyDay}
                 onChange={(e) => setWeeklyDay(e.target.value)}
                 bg="bg.secondary"
-                borderColor="border.primary"
+                borderColor="border.color"
                 color="text.primary"
                 _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
               >
@@ -267,7 +267,7 @@ const ScheduledTasks = () => {
                 value={weeklyTime}
                 onChange={(e) => setWeeklyTime(e.target.value)}
                 bg="bg.secondary"
-                borderColor="border.primary"
+                borderColor="border.color"
                 color="text.primary"
                 _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
               />
@@ -276,7 +276,7 @@ const ScheduledTasks = () => {
         );
       case 'custom':
         return (
-          <Box border="1px dashed" borderColor="border.primary" p={4} borderRadius="md" bg="bg.secondary">
+          <Box border="1px dashed" borderColor="border.color" p={4} borderRadius="md" bg="bg.secondary">
             <FormControl id="cron-expression" isRequired>
               <FormLabel>Cron Expression</FormLabel>
               <Input
@@ -285,7 +285,7 @@ const ScheduledTasks = () => {
                 value={cronExpression}
                 onChange={(e) => setCronExpression(e.target.value)}
                 bg="bg.secondary"
-                borderColor="border.primary"
+                borderColor="border.color"
                 color="text.primary"
                 _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
               />
@@ -314,8 +314,8 @@ const ScheduledTasks = () => {
         Scheduled Tasks
       </Heading>
 
-      <Box bg="bg.card" border="1px solid" borderColor="border.primary" borderRadius="lg" p={6} boxShadow="lg" mb={8}>
-        <Flex align="center" mb={4} color="accent.blue" fontSize="xl" fontWeight="semibold" borderBottom="1px solid" borderColor="border.primary" pb={4}>
+      <Box bg="bg.card" border="1px solid" borderColor="border.color" borderRadius="lg" p={6} boxShadow="lg" mb={8}>
+        <Flex align="center" mb={4} color="accent.blue" fontSize="xl" fontWeight="semibold" borderBottom="1px solid" borderColor="border.color" pb={4}>
           <Box as={FaCalendarCheck} mr={3} />
           Manage Scheduled API Calls
         </Flex>
@@ -392,8 +392,8 @@ const ScheduledTasks = () => {
         </Box>
       </Box>
 
-      <Box bg="bg.card" border="1px solid" borderColor="border.primary" borderRadius="lg" p={6} boxShadow="lg">
-        <Flex align="center" mb={4} color="accent.blue" fontSize="xl" fontWeight="semibold" borderBottom="1px solid" borderColor="border.primary" pb={4}>
+      <Box bg="bg.card" border="1px solid" borderColor="border.color" borderRadius="lg" p={6} boxShadow="lg">
+        <Flex align="center" mb={4} color="accent.blue" fontSize="xl" fontWeight="semibold" borderBottom="1px solid" borderColor="border.color" pb={4}>
           <Box as={FaHistory} mr={3} />
           Execution History
         </Flex>
@@ -434,7 +434,7 @@ const ScheduledTasks = () => {
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent bg="bg.card" borderRadius="lg" boxShadow="2xl" p={6} maxH="90vh" overflowY="auto">
-          <ModalHeader color="text.primary" borderBottom="1px solid" borderColor="border.primary" pb={4} mb={4}>
+          <ModalHeader color="text.primary" borderBottom="1px solid" borderColor="border.color" pb={4} mb={4}>
             {currentEditingTask ? 'Edit Scheduled Task' : 'Create New Scheduled Task'}
           </ModalHeader>
           <ModalCloseButton color="text.secondary" _hover={{ color: 'text.primary' }} />
@@ -450,7 +450,7 @@ const ScheduledTasks = () => {
                   value={taskName}
                   onChange={(e) => setTaskName(e.target.value)}
                   bg="bg.secondary"
-                  borderColor="border.primary"
+                  borderColor="border.color"
                   color="text.primary"
                   _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
                 />
@@ -462,7 +462,7 @@ const ScheduledTasks = () => {
                   value={apiEndpoint}
                   onChange={(e) => setApiEndpoint(e.target.value)}
                   bg="bg.secondary"
-                  borderColor="border.primary"
+                  borderColor="border.color"
                   color="text.primary"
                   _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
                 >
@@ -484,7 +484,7 @@ const ScheduledTasks = () => {
                   value={parametersJson}
                   onChange={(e) => setParametersJson(e.target.value)}
                   bg="bg.secondary"
-                  borderColor="border.primary"
+                  borderColor="border.color"
                   color="text.primary"
                   _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
                   minH="80px"
@@ -497,19 +497,19 @@ const ScheduledTasks = () => {
                 <FormLabel as="legend" color="text.primary">Schedule Type</FormLabel>
                 <RadioGroup onChange={setScheduleType} value={scheduleType}>
                   <Stack direction={{ base: 'column', md: 'row' }} wrap="wrap" spacing={4}>
-                    <Flex as="label" className="radio-group" alignItems="center" bg="bg.secondary" p={3} borderRadius="md" border="1px solid" borderColor="border.primary" cursor="pointer" _hover={{ bg: 'bg.card', borderColor: 'accent.blue' }}>
+                    <Flex as="label" className="radio-group" alignItems="center" bg="bg.secondary" p={3} borderRadius="md" border="1px solid" borderColor="border.color" cursor="pointer" _hover={{ bg: 'bg.card', borderColor: 'accent.blue' }}>
                       <Radio value="once" mr={2} />
                       <Text color="text.secondary">Once</Text>
                     </Flex>
-                    <Flex as="label" className="radio-group" alignItems="center" bg="bg.secondary" p={3} borderRadius="md" border="1px solid" borderColor="border.primary" cursor="pointer" _hover={{ bg: 'bg.card', borderColor: 'accent.blue' }}>
+                    <Flex as="label" className="radio-group" alignItems="center" bg="bg.secondary" p={3} borderRadius="md" border="1px solid" borderColor="border.color" cursor="pointer" _hover={{ bg: 'bg.card', borderColor: 'accent.blue' }}>
                       <Radio value="daily" mr={2} />
                       <Text color="text.secondary">Daily</Text>
                     </Flex>
-                    <Flex as="label" className="radio-group" alignItems="center" bg="bg.secondary" p={3} borderRadius="md" border="1px solid" borderColor="border.primary" cursor="pointer" _hover={{ bg: 'bg.card', borderColor: 'accent.blue' }}>
+                    <Flex as="label" className="radio-group" alignItems="center" bg="bg.secondary" p={3} borderRadius="md" border="1px solid" borderColor="border.color" cursor="pointer" _hover={{ bg: 'bg.card', borderColor: 'accent.blue' }}>
                       <Radio value="weekly" mr={2} />
                       <Text color="text.secondary">Weekly</Text>
                     </Flex>
-                    <Flex as="label" className="radio-group" alignItems="center" bg="bg.secondary" p={3} borderRadius="md" border="1px solid" borderColor="border.primary" cursor="pointer" _hover={{ bg: 'bg.card', borderColor: 'accent.blue' }}>
+                    <Flex as="label" className="radio-group" alignItems="center" bg="bg.secondary" p={3} borderRadius="md" border="1px solid" borderColor="border.color" cursor="pointer" _hover={{ bg: 'bg.card', borderColor: 'accent.blue' }}>
                       <Radio value="custom" mr={2} />
                       <Text color="text.secondary">Custom (Cron)</Text>
                     </Flex>
@@ -521,7 +521,7 @@ const ScheduledTasks = () => {
             </form>
           </ModalBody>
 
-          <ModalFooter borderTop="1px solid" borderColor="border.primary" pt={4} mt={4}>
+          <ModalFooter borderTop="1px solid" borderColor="border.color" pt={4} mt={4}>
             <Button variant="ghost" onClick={onClose} mr={3} color="text.secondary" _hover={{ bg: 'bg.card', color: 'text.primary' }}>
               Cancel
             </Button>

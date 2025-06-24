@@ -177,8 +177,8 @@ const LogsViewer = () => {
         Container Logs Viewer
       </Heading>
 
-      <Box bg="bg.card" border="1px solid" borderColor="border.primary" borderRadius="lg" p={6} boxShadow="lg">
-        <Flex align="center" mb={4} color="accent.blue" fontSize="xl" fontWeight="semibold" borderBottom="1px solid" borderColor="border.primary" pb={4}>
+      <Box bg="bg.card" border="1px solid" borderColor="border.color" borderRadius="lg" p={6} boxShadow="lg">
+        <Flex align="center" mb={4} color="accent.blue" fontSize="xl" fontWeight="semibold" borderBottom="1px solid" borderColor="border.color" pb={4}>
           <Box as={FaRedo} mr={3} />
           Real-time Logs
         </Flex>
@@ -192,7 +192,7 @@ const LogsViewer = () => {
             flex="1"
             minWidth={{ base: '100%', md: '200px' }}
             bg="bg.secondary"
-            borderColor="border.primary"
+            borderColor="border.color"
             color="text.primary"
             _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
           />
@@ -231,7 +231,7 @@ const LogsViewer = () => {
             flex="1"
             minWidth={{ base: '100%', md: '200px' }}
             bg="bg.secondary"
-            borderColor="border.primary"
+            borderColor="border.color"
             color="text.primary"
             _focus={{ borderColor: 'accent.blue', boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.25)' }}
           />
@@ -248,7 +248,7 @@ const LogsViewer = () => {
         <Box
           ref={logViewerRef}
           bg="#0a0a1a" // Specific dark background for logs
-          border="1px solid" borderColor="border.primary"
+          border="1px solid" borderColor="border.color"
           borderRadius="lg"
           fontFamily="IBM Plex Mono"
           fontSize="sm"
