@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables from HTML Sample */
+:root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-card: #0f3460;
+    --text-color: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --accent-blue: #007bff;
+    --accent-green: #28a745;
+    --accent-red: #dc3545;
+    --accent-orange: #ffc107;
+    --border-color: #0d2138;
+    --shadow-light: rgba(0, 0, 0, 0.2);
+    --shadow-dark: rgba(0, 0, 0, 0.4);
+    --font-family: 'Inter', sans-serif;
+    --font-code: 'IBM Plex Mono', monospace; /* Using IBM Plex Mono as per plan */
+    --border-radius: 8px;
+    --transition-speed: 0.3s ease;
+}
+
+/* Base styles to ensure consistency with the design system */
+html, body {
+    height: 100%;
+    font-family: var(--font-family);
+    background-color: var(--bg-primary);
+    color: var(--text-color);
+    line-height: 1.6;
+    scroll-behavior: smooth;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Global scrollbar styling for dark theme */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--bg-card);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-blue);
+}
+
+/* Apply Fira Code (or IBM Plex Mono) to pre, code elements */
+pre, code, .font-mono {
+    font-family: var(--font-code);
+}
+
+/* Custom utility classes or base styles that might not be covered by Tailwind directly */
+.logo svg {
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
+}
+
+/* Custom method badge styles for API Explorer */
+.method {
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    min-width: 55px;
+    text-align: center;
+}
+
+.method.post { background-color: var(--accent-orange); color: #333; }
+.method.get { background-color: var(--accent-green); color: #333; }
+
+/* Status badge styles for Container Manager and Scheduled Tasks */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4em 0.8em;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.status-badge.running, .status-badge.active, .status-badge.completed {
+    background-color: rgba(40, 167, 69, 0.2); /* Green tint */
+    color: var(--accent-green);
+}
+.status-badge.running .dot, .status-badge.active .dot { background-color: var(--accent-green); }
+
+.status-badge.stopped, .status-badge.exited, .status-badge.failed {
+    background-color: rgba(220, 53, 69, 0.2); /* Red tint */
+    color: var(--accent-red);
+}
+.status-badge.stopped .dot, .status-badge.exited .dot, .status-badge.failed .dot { background-color: var(--accent-red); }
+
+.status-badge.pending, .status-badge.restarting {
+    background-color: rgba(255, 193, 7, 0.2); /* Orange tint */
+    color: var(--accent-orange);
+}
+.status-badge.pending .dot, .status-badge.restarting .dot { background-color: var(--accent-orange); }
+
+/* Custom button styles to match HTML samples */
+.btn {
+    @apply bg-accent-blue text-white py-2 px-4 rounded-md cursor-pointer text-base font-medium no-underline inline-flex items-center justify-center gap-2 transition-all duration-300 ease-in-out;
+}
+.btn:hover {
+    @apply bg-blue-700 -translate-y-px;
+}
+
+.btn-secondary {
+    @apply bg-bg-secondary border border-accent-blue text-accent-blue;
+}
+.btn-secondary:hover {
+    @apply bg-accent-blue text-white;
+}
+
+.btn-red {
+    @apply bg-accent-red;
+}
+.btn-red:hover {
+    @apply bg-red-700;
+}
+
+.btn-green {
+    @apply bg-accent-green;
+}
+.btn-green:hover {
+    @apply bg-green-700;
+}
+
+.btn-orange {
+    @apply bg-accent-orange text-gray-900; /* Ensure text is visible on orange */
+}
+.btn-orange:hover {
+    @apply bg-yellow-600;
+}
+
+/* Form element styles */
+input[type="text"],
+input[type="datetime-local"],
+input[type="time"],
+input[type="file"],
+select,
+textarea {
+    @apply w-full p-3 rounded-md border border-border-color bg-bg-secondary text-text-color text-base transition-all duration-300 ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="datetime-local"]:focus,
+input[type="time"]:focus,
+input[type="file"]:focus,
+select:focus,
+textarea:focus {
+    @apply outline-none border-accent-blue shadow-outline-blue; /* Custom shadow for focus */
+}
+
+/* Define custom shadow for focus */
+.shadow-outline-blue {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* JSON syntax highlighting classes */
+.json-key { color: #9cdcfe; } /* Blue for keys */
+.json-string { color: #ce9178; } /* Orange for strings */
+.json-number, .json-boolean { color: #b5cea8; } /* Green for numbers/booleans */
+.json-null { color: #569cd6; } /* Light blue for null */
+.json-bracket { color: #d4d4d4; } /* White for brackets/commas */
